@@ -1,1 +1,10 @@
 /* CSS declarations go here */
+.item {
+  display: block;
+  padding: 5px;
+  margin: 5px;
+  background-color: #ccc;
+  border: 1px solid #aaa;
+  width: 200px;
+  cursor: move;
+}

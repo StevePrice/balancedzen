@@ -1,14 +1,17 @@
 <head>
-  <title>balancedzen</title>
+  <title>Welcome to Balanced Zen</title>
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
-
-  {{> hello}}
+  <h1>Tools to help your work life balance</h1>
+ 
+  {{> items}}
 </body>
-
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+ 
+<template name="items">
+  <div id="items">
+  {{#each items}}
+    <div class="item">{{title}}</div>
+  {{/each}}
+  </div>
 </template>
