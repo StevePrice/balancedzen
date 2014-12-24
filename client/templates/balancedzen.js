@@ -1,4 +1,4 @@
-Items = new Mongo.Collection('items')
+//Items = new Mongo.Collection('items')
  
 // iron router stuff
 Router.route('/', function () {
@@ -12,9 +12,9 @@ if(Meteor.isServer) {
   //Only seed on the server
   Meteor.startup(function() {
     //AND only seed if there are no items
-    if(Items.find({}).count() == 0) {
+    if(Goals.find({}).count() == 0) {
       for(var i = 1; i <= 10; i++) {
-        Items.insert({
+        Goals.insert({
             title: "Item " + i,
             rank: i
         })
@@ -32,7 +32,7 @@ if(Meteor.isClient) {
   //    will re-render our Template (putting them in the correct order)
   Template.items.helpers({
     items: function() {
-      return Items.find({}, {sort: {rank: 1}})
+      return Goals.find({}, {sort: {rank: 1}})
     }
   })
  
@@ -67,7 +67,7 @@ if(Meteor.isClient) {
                        Blaze.getData(before).rank)/2
  
           //update the dragged Item's rank
-          Items.update({_id: Blaze.getData(el)._id}, {$set: {rank: newRank}})
+          Goals.update({_id: Blaze.getData(el)._id}, {$set: {rank: newRank}})
         }
     })
   }
