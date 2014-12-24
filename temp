@@ -2,20 +2,13 @@
 	  <title>Welcome to Balanced Zen</title>
 	</head>
 
-
-<template name="Home">
-  {{> Nav}}
-
-  <h1>Welcome</h1>
-  
-  <p>A list of Goals go here
-  	{{> items}}
-  	</p>
-</template>
-	
+	<body>
+	  <h1>Tools to help your work life balance</h1>
 	 
-
-<template name="items">
+	  {{> items}}
+	</body>
+	 
+	<template name="items">
 	  <div id="items">
 	  {{#each items}}
 	    <div class="item">{{title}}</div>

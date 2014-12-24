@@ -8,3 +8,7 @@
   width: 200px;
   cursor: move;
 }
+.myheader{
+	display: block;
+	padding: 5px;
+}

@@ -1,5 +1,11 @@
 Items = new Mongo.Collection('items')
  
+// iron router stuff
+Router.route('/', function () {
+  this.render('Home');
+}); 
+
+
 //server check only required because this code
 // is running on both client AND server
 if(Meteor.isServer) {
