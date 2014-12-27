@@ -1,2 +1,3 @@
-Goals = new Meteor.Collection('goals');
+Goals = new Mongo.Collection('goals');
+Items = new Mongo.Collection('items');
  

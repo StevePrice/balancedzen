@@ -8,7 +8,19 @@
   width: 200px;
   cursor: move;
 }
+.goal {
+  display: block;
+  padding: 5px;
+  margin: 5px;
+  background-color: #ccc;
+  border: 1px solid #aaa;
+  width: 200px;
+  cursor: move;
+}
 .myheader{
 	display: block;
 	padding: 5px;
+}
+.footer{
+  text-align: center;
 }

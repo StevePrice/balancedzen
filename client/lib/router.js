@@ -1,6 +1,6 @@
 Router.configure({
   // we use the  appBody template to define the layout for the entire app
-  layoutTemplate: 'balancedzen',
+  layoutTemplate: 'layout',
 
   // the appNotFound template is used for unknown routes and missing lists
   notFoundTemplate: 'appNotFound',
@@ -12,34 +12,45 @@ Router.configure({
   // the data it's expecting is present
   waitOn: function() {
     return [
-      Meteor.subscribe('Goals')
+      Meteor.subscribe('Goals'),
+      Meteor.subscribe('Items')
     ];
   }
-  });
-
-if (Meteor.isClient) {
-  // Keep showing the launch screen on mobile devices until we have loaded
-  // the app's data
-  
-  // Show the loading screen on desktop
-  //Router.onBeforeAction('loading', {except: ['join', 'signin']});
-  //Router.onBeforeAction('dataNotFound', {except: ['join', 'signin']});
-}
+});
+Router.route('/', function () {
+  this.render('Home');
+}); 
 
 Router.map(function() {
   
-  this.route('home', {
-    //path: '/',
+  this.route('goals', {
+    /* path: '/', 
     action: function() {
       this.render();
-    },
+    },*/ 
     data: function () {
-      return Items.findOne();
+      GoalsData = { goals: Goals.find({}, { sort: {rank: 1}}) };
+      return GoalsData;
     }
   });
+  this.route('home', {
+    /* path: '/', */
+    action: function() { this.render(); },
+    data: function () { 
+      ItemsData = {items: Items.find({})};
+      return ItemsData; }
+  } );
+
+  this.route('plans');
+
+  this.route('actions');
 });
+
+
+/**/
 
 if (Meteor.isClient) {
   Router.onBeforeAction('loading', {except: ['join', 'signin']});
   Router.onBeforeAction('dataNotFound', {except: ['join', 'signin']});
+  
 }

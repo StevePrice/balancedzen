@@ -1,25 +1,13 @@
-<template name="appBody">
+<!--- Not used at the moment -->
+<template name="appBodyaaa">
 	<div id="container">
 	<h2>Welcome</h2>
 	<header>
       {{> Nav }}
-    </header>
+    </header> 
     {{> yield}}
  
-	  
-	<p>A list of Goals go here
-	  	{{> items}}
-  	</p>
   	</div>
 </template> 
 	
 	 
-
-<template name="items2">
-	<div id="items">
-	  {{#each items}}
-	    <div class="item">{{title}}</div>
-	  {{/each}}
-	</div>
-</template>
-	
