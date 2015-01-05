@@ -9,23 +9,8 @@
   
   {{#each   indexedArray  goals}}
     
-    {{#if gttw _index}}
-        <div class="mygroup" style="background-color: #1D6566">
-        <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
-        
-        <label class="checkbox">
-          <input type="checkbox" checked="{{checked}}" name="checked">
-          <span class="checkbox-custom"></span>
-        </label>
-        <span class="badge" >{{_index}}</span> of 
-        <span class="badge" >{{goalsTotal}}</span>
-        {{!-- <span class="badge" >R:{{rank2 rank}}</span> --}}
-        <input class="item" type="text" value="{{title}}" placeholder="Goal name">
-        <a class="js-delete-item delete-item" href="#"><span class="icon-trash"></span></a>
-        </div>
-        </div>
-    {{else}}
-       <div class="mygroup" style="background-color: #4CC746">
+    
+       <div class="mygroup" style= {{#if gttw _index}} background-color: #1D6566 {{else}} background-color: #4CC746 {{/if}} >
        <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
         
         <label class="checkbox">
@@ -39,9 +24,7 @@
         <a class="js-delete-item delete-item" href="#"><span class="icon-trash"></span></a>
         </div>
         </div>
-    {{/if}}
-        
-    
+
   {{/each}}
   </div>
 </template>
