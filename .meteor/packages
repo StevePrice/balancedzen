@@ -8,7 +8,7 @@ meteor-platform
 insecure
 iron:router
 mrt:jquery-ui
-accounts-ui
 accounts-password
-nemo64:bootstrap
 less
+mizzao:bootstrap-3
+accounts-ui

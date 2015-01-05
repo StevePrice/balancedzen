@@ -1,5 +1,5 @@
 <template name="nav">
-<nav class="navbar navbar-inverse">
+  <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -13,7 +13,7 @@
       <ul class="nav navbar-nav">
         {{> navItems}}        
       </ul>
-      <ul class="nav navbar-nav navbar-right">  </ul>
+      <ul class="nav navbar-nav navbar-left"> {{> loginButtons}} </ul>
     </div>
   </div>
 </nav>
@@ -24,9 +24,17 @@
 </template>
 
 <template name="navItems">
+
   <li class="{{ activeIfTemplateIs 'home' }}"><a href="/">Home</a></li>
   <li class="{{ activeIfTemplateIs 'goals' }}"><a href="{{pathFor 'goals'}}">Goals</a></li>
   <li class="{{ activeIfTemplateIs 'plans' }}"><a href="{{pathFor 'plans'}}">Plans</a></li>
   <li class="{{ activeIfTemplateIs 'actions' }}"><a href="{{pathFor 'actions'}}">Actions</a></li>
-  <li >{{> loginButtons}}</li>
+  <!-- li class="nav pull-right" >{{> loginButtons}}</li> 
+  <ul class="nav navbar-nav navbar-right">
+        {{> loginButtons}}
+      </ul>-->
+  {{#if currentUser}}
+    Welcome {{currentUser.profile.login}}.
+  {{/if}}
+  
 </template>

@@ -1,17 +1,20 @@
-	<head>
-	  <title>Welcome to Balanced Zen</title>
-	</head>
-
-	<body>
-	  <h1>Tools to help your work life balance</h1>
-	 
-	  {{> items}}
-	</body>
-	 
-	<template name="items">
-	  <div id="items">
-	  {{#each items}}
-	    <div class="item">{{title}}</div>
-	  {{/each}}
-	  </div>
-	</template>
+<template name="nav">
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>                        
+      </button>
+        {{> navBrand}}
+      </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        {{> navItems}}        
+      </ul>
+      <ul class="nav navbar-nav navbar-right"> {{> loginButtons}} </ul>
+    </div>
+  </div>
+</nav>
+</template>

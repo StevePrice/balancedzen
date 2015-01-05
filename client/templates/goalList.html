@@ -1,7 +1,47 @@
 <template name="goalList">
-	  <div id="goals">
-	  {{#each goals}}
-	    <div class="goal">{{title}}</div>
-	  {{/each}}
-	  </div>
-	</template>
+  <div id="goals">
+  <div> 
+  	<form class="js-todo-new todo-new input-symbol">
+        <input class="addFinGoal" name="addFinGoal" type="text" placeholder="Type to add new goal" value="">
+        <span class="icon-add js-addFinGoal"> </span>
+	</form>
+  </div>
+  
+  {{#each   indexedArray  goals}}
+    
+    {{#if gttw _index}}
+        <div class="mygroup" style="background-color: #1D6566">
+        <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
+        
+        <label class="checkbox">
+          <input type="checkbox" checked="{{checked}}" name="checked">
+          <span class="checkbox-custom"></span>
+        </label>
+        <span class="badge" >{{_index}}</span> of 
+        <span class="badge" >{{goalsTotal}}</span>
+        {{!-- <span class="badge" >R:{{rank2 rank}}</span> --}}
+        <input class="item" type="text" value="{{title}}" placeholder="Goal name">
+        <a class="js-delete-item delete-item" href="#"><span class="icon-trash"></span></a>
+        </div>
+        </div>
+    {{else}}
+       <div class="mygroup" style="background-color: #4CC746">
+       <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
+        
+        <label class="checkbox">
+          <input type="checkbox" checked="{{checked}}" name="checked">
+          <span class="checkbox-custom"></span>
+        </label>
+        <span class="badge" >{{_index}}</span> of 
+        <span class="badge" >{{goalsTotal}}</span>
+        {{!-- <span class="badge" >R:{{rank2 rank}}</span> --}}
+        <input class="item" type="text" value="{{title}}" placeholder="Goal name">
+        <a class="js-delete-item delete-item" href="#"><span class="icon-trash"></span></a>
+        </div>
+        </div>
+    {{/if}}
+        
+    
+  {{/each}}
+  </div>
+</template>

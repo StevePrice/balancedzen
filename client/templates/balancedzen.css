@@ -1,11 +1,11 @@
 /* CSS declarations go here */
 .item {
-  display: block;
+  display: inline-block;
   padding: 5px;
   margin: 5px;
   background-color: #ccc;
-  border: 1px solid #aaa;
-  width: 200px;
+  border: 1px dashed #aaa;
+  width: 65%;
   cursor: move;
 }
 .goal {
@@ -23,4 +23,12 @@
 }
 .footer{
   text-align: center;
+}
+#login-dropdown-list {
+  position: absolute;
+  top: 0;
+  left: 0%;
+  margin-top: -5px;
+  margin-left: 50%;
+
 }
