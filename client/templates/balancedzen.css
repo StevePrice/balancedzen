@@ -2,20 +2,22 @@
 .item {
   display: inline-block;
   padding: 5px;
-  margin: 5px;
+  margin: 25px;
   background-color: #ccc;
   border: 1px dashed #aaa;
   width: 65%;
   cursor: move;
 }
-.goal {
+#goals {
   display: block;
   padding: 5px;
   margin: 5px;
-  background-color: #ccc;
-  border: 1px solid #aaa;
-  width: 200px;
+  margin-top: 5px;
+  background-color: #55f;
+  border: 5px solid #aaf;
+  width: 95%;
   cursor: move;
+  containment: parent;
 }
 .myheader{
 	display: block;

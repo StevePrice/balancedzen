@@ -58,7 +58,7 @@ if(Meteor.isClient) {
 
   Template.goals.events({
     'change [type=checkbox]': function(event) {
-      console.log("Event change...");
+      //console.log("Event change...");
       //event.stopPropagation();
       var checked = $(event.target).is(':checked');
       var oldRank = this.rank;
@@ -66,18 +66,18 @@ if(Meteor.isClient) {
     },
     
     'focus input[type=text]': function(event) {
-      console.log("Event focus input[type=text]...");
+      //console.log("Event focus input[type=text]...");
       Session.set(EDITING_KEY, this._id);
     },
     
     'blur input[type=text]': function(event) {
-      console.log("Event blur input[type=text]...");
+      //console.log("Event blur input[type=text]...");
       if (Session.equals(EDITING_KEY, this._id))
         Session.set(EDITING_KEY, null);
     },
     
     'keydown input[type=text]': function(event) {
-      console.log("Event keydown input...");
+      //console.log("Event keydown input...");
       // ESC or ENTER
       if (event.which === 27 || event.which === 13) {
         
@@ -99,14 +99,14 @@ if(Meteor.isClient) {
     // we don't flood the server with updates (handles the event at most once 
     // every 300ms)
     'keyup input[type=text]': _.throttle(function(event) {
-      console.log("Event keyup input...");
+      //console.log("Event keyup input...");
       Goals.update(this._id, {$set: {title: event.target.value}});
     }, 300),
     
     // handle mousedown otherwise the blur handler above will swallow the click
     // on iOS, we still require the click event so handle both
     'mousedown .js-delete-item, click .js-delete-item': function() {
-      console.log("Event mousedown ...");
+      //console.log("Event mousedown ...");
       Goals.remove(this._id);
       //if (! this.checked)
        //Lists.update(this.listId, {$inc: {incompleteCount: -1}});
@@ -131,10 +131,6 @@ if(Meteor.isClient) {
     goalsTotal: function() {
       return Goals.find({}).count();
     }
-    //,
-    //rank2: function (str) { 
-    //  return this.str.toFixed(2); 
-    //}
   });
 
   UI.registerHelper('indexedArray', function(context, options) {
@@ -154,6 +150,9 @@ if(Meteor.isClient) {
   UI.registerHelper('gttw', function(index) {
     return ( index > (Goals.find({}).count() * .2));
   });
+  UI.registerHelper('rankTwo', function(str) {
+    return str.toFixed(2);
+  });
 
   //Once the Template is rendered, run this function which
   //  sets up JQuery UI's sortable functionality
@@ -162,30 +161,38 @@ if(Meteor.isClient) {
         stop: function(e, ui) {
           // get the dragged html element and the one before
           //   and after it
-          el = ui.item.get(0)
-          var before = ui.item.prev().get(0)
-          var after = ui.item.next().get(0)
-          console.log("Before from Blaze = " + Blaze.getData(before).rank);
-          console.log("After  from Blaze = " + Blaze.getData(after).rank);
-          var rankBefore = Blaze.getData(before).rank;
-          var rankAfter  = Blaze.getData(after).rank
-          if(typeof rankBefore === "undefined") {    
-            console.log("Before === undefined.")
+          console.log("P 1");
+          el = ui.item.get(0);
+          console.log("P 2");
+          before = ui.item.prev().get(0);
+          console.log("P 3: before = " + before + ".");
+          after = ui.item.next().get(0);
+          console.log("P 4:  after = " + after + ".");
+          //console.log("Before from Blaze = " + Blaze.getData(before).rank);
+          //console.log("After  from Blaze = " + Blaze.getData(after).rank);
+          //= typeof b !== 'undefined' ?  b : 1;
+          //var rankBefore = Blaze.getData(before).rank;
+          //var rankAfter  = Blaze.getData(after).rank
+          //console.log("rankBefore= " + rankBefore);
+         // console.log("rankAfter = " + rankAfter);
+          if(typeof before !== 'undefined') {    
+            console.log("Before !== undefined.")
             newRank = Blaze.getData(after).rank - 1;
-            console.log("B4undef newRank =" + newRank);
-          } else if(typeof rankAfter === "undefined") {
-            console.log("After  === undefined");
+            //console.log("newRank =" + newRank);
+          } else if(typeof after !== 'undefined') {
+            console.log("After  !== undefined");
             newRank = Blaze.getData(before).rank + 1;
           }
-          else {
-            console.log("else clause")
-            newRank = (rankAfter + rankBefore)/2;
+          else { 
+            console.log("Neither is undefined ... else clause")
+            newRank = (Blaze.getData(after).rank + Blaze.getData(before).rank)/2;
           }
           console.log("newRank= " + newRank);
           //update the dragged Item's rank
           Goals.update({_id: Blaze.getData(el)._id}, {$set: {rank: newRank}});
         }
-    })
+    });
+    this.$('#goals').sortable("option", "containment", "parent" );
   }
 
   
