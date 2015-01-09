@@ -9,23 +9,34 @@
   <div id="goals">
   {{#each   indexedArray  goals}}
     
-        
-       <div class="mygroup" style= {{#if gttw _index}} background-color: #1D6566 {{else}} background-color: #008009 {{/if}} >
-       <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
-        
-        <label class="checkbox">
-          <input type="checkbox" checked="{{checked}}" name="checked">
-          <span class="checkbox-custom"></span>
-        </label>
-        <span class="badge" >{{_index}} of {{goalsTotal}}</span>
-        <span class="badge" >R:{{rankTwo rank}}</span> 
-        <input class="item" type="text" value="{{title}}" placeholder="Goal name">
-        <span class="icon-add js-addPlan"> </span>
-        
-        <a class="js-delete-item delete-item pull-right centering"  href="#"><span class="icon-trash text-center"></span></a>
-        
-        </div><br>
+
+      <div class="mygroup" style= {{#if gttw _index}} background-color: #1D6566 {{else}} background-color: #008009 {{/if}} >
+        <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
+          <label class="checkbox">
+            <input type="checkbox" checked="{{checked}}" name="checked">
+            <span class="checkbox-custom"></span>
+          </label>
+          <span class="badge" >{{_index}} of {{goalsTotal}}</span>
+          <span class="badge" >R:{{rankTwo rank}}</span> 
+          <input class="item" type="text" value="{{title}}" placeholder="Goal name">
+          <span class="icon-add js-addPlan"> </span>
+          
+          <span class="btn-group btn-group-sm" role="group" aria-label="...">
+            <button type="button" class="btn btn-xs">
+              <span class="glyphicon glyphicon-cog"></span>
+            </button>
+            <button type="button" class="btn btn-xs">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+            <button type="button" class="btn btn-xs">
+              <span class="glyphicon glyphicon-calendar"></span>
+            </button>
+          </span> 
+          <span class="glyphicon glyphicon-cog icon-cog"></span>
+          <a class="js-delete-item delete-item"  href="#"><span class="glyphicon glyphicon-trash"></span></a>
+          <a class="js-delete-item delete-item"  href="#"><span class="icon-trash"></span></a>
         </div>
+      </div>
 
   {{/each}}
   </div>

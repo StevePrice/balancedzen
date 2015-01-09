@@ -13,7 +13,7 @@
       <ul class="nav navbar-nav">
         {{> navItems}}        
       </ul>
-      <ul class="nav navbar-nav navbar-left"> {{> loginButtons}} </ul>
+      <ul class="nav navbar-nav navbar-right"> {{> loginButtons}} </ul>
     </div>
   </div>
 </nav>
@@ -26,9 +26,14 @@
 <template name="navItems">
 
   <li class="{{ activeIfTemplateIs 'home' }}"><a href="/">Home</a></li>
-  <li class="{{ activeIfTemplateIs 'goals' }}"><a href="{{pathFor 'goals'}}">Goals</a></li>
-  <li class="{{ activeIfTemplateIs 'plans' }}"><a href="{{pathFor 'plans'}}">Plans</a></li>
-  <li class="{{ activeIfTemplateIs 'actions' }}"><a href="{{pathFor 'actions'}}">Actions</a></li>
+   {{#if currentUser}}
+      <li class="{{ activeIfTemplateIs 'goals' }}"><a href="{{pathFor 'goals'}}">Goals</a></li>
+      <li class="{{ activeIfTemplateIs 'plans' }}"><a href="{{pathFor 'plans'}}">Plans</a></li>
+      <li class="{{ activeIfTemplateIs 'actions' }}"><a href="{{pathFor 'actions'}}">Actions</a></li>
+      profile
+  {{else}}
+      <li>&nbsp;</li>      
+  {{/if}}
   <!-- li class="nav pull-right" >{{> loginButtons}}</li> 
   <ul class="nav navbar-nav navbar-right">
         {{> loginButtons}}

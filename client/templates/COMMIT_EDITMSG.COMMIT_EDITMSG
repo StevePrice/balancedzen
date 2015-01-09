@@ -1,0 +1,505 @@
+Added roles and secured the site so that users need to be logged in to
+view the sites content.
+
+# --------------
+# Please enter the commit message for your changes. Everything below
+# this paragraph is ignored, and an empty message aborts the commit.
+# Just close the window to accept your message.
+diff --git a/.meteor/packages b/.meteor/packages
+index fb9f8bf..75a2894 100644
+--- a/.meteor/packages
++++ b/.meteor/packages
+@@ -12,3 +12,4 @@ accounts-password
+ less
+ mizzao:bootstrap-3
+ accounts-ui
++alanning:roles
+diff --git a/.meteor/versions b/.meteor/versions
+index 13747e9..112510e 100644
+--- a/.meteor/versions
++++ b/.meteor/versions
+@@ -2,6 +2,7 @@ accounts-base@1.1.3
+ accounts-password@1.0.5
+ accounts-ui@1.1.4
+ accounts-ui-unstyled@1.1.5
++alanning:roles@1.2.13
+ application-configuration@1.0.4
+ autoupdate@1.1.4
+ base64@1.0.2
+diff --git a/client/lib/router.js b/client/lib/router.js
+index db60856..c694041 100644
+--- a/client/lib/router.js
++++ b/client/lib/router.js
+@@ -1,3 +1,6 @@
++//Items = new Mongo.Collection('items')
++ 
++// iron router stuff
+ Router.configure({
+   // we use the  appBody template to define the layout for the entire app
+   layoutTemplate: 'layout',
+@@ -53,4 +56,71 @@ if (Meteor.isClient) {
+   Router.onBeforeAction('loading', {except: ['join', 'signin']});
+   Router.onBeforeAction('dataNotFound', {except: ['join', 'signin']});
+   
+-}
+\ No newline at end of file
++}
++
++Router.onBeforeAction(function () {
++  // all properties available in the route function
++  // are also available here such as this.params
++
++  if (!Meteor.user()) {
++    // if the user is not logged in, render the Login template
++    this.render('Login');
++  } else {
++    // otherwise don't hold up the rest of hooks or our route/action function
++    // from running
++    this.next();
++  }
++});
++var IR_Filters = {
++    // All standard subscriptions you need before anything works
++    // the .wait() makes sure that it continues only if the subscription
++    // is ready and the data available
++    // Use: global
++    baseSubscriptions: function() {
++        this.subscribe('userData').wait();
++    },
++    // show login if a guest wants to access private areas
++    // Use: {only: [privateAreas] }
++    isLoggedIn: function(pause) {
++        if (!(Meteor.loggingIn() || Meteor.user())) {
++          Notify.setError(__('Please login.')); // some custom packages
++          this.render('login');
++          pause();
++        }
++    },
++    // make sure to scroll to the top of the page on a new route
++    // Use: global
++    scrollUp: function() {
++        $('body,html').scrollTop(0);
++    },
++    // if this route depends on data, show the NProgess loading indicator
++    // http://ricostacruz.com/nprogress/
++    // Use: global
++    startNProgress: function() {
++        if (_.isFunction(this.data)) {
++          NProgress.start();
++        }
++    },
++    // tell google analytics that a page was viewed
++    // e.g. https://github.com/datariot/meteor-ganalytics
++    // Use: global
++    pageview: function() {
++        GAnalytics.pageview(this.path);
++    },
++    // only show route if you are an admin
++    // using https://github.com/alanning/meteor-roles
++    // Use: {only: [adminAreas]}
++    isAdmin: function(pause) {
++        if (!Roles.userIsInRole(Meteor.userId(), ['admin'])) {
++          this.render('login');
++          pause();
++        }
++    },
++    // animate old content out using
++    // http://daneden.github.io/animate.css/
++    // Use: global
++    animateContentOut: function() {
++        $('#content').removeClass("animated fadeIn fadeInRight");
++        $('footer').addClass("hide");
++    }
++}
+diff --git a/client/stylesheets/globals/button.import.less b/client/stylesheets/globals/button.import.less
+index 8b071a6..83ea337 100644
+--- a/client/stylesheets/globals/button.import.less
++++ b/client/stylesheets/globals/button.import.less
+@@ -8,8 +8,9 @@
+   // Style
+   .title-caps;
+   .transition( all 200ms ease-in );
+-  color: @color-empty;
++  color: @color-primary;
+   display: inline-block;
++  // display: inline;
+   position: relative;
+   text-align: center;
+   text-decoration: none !important; //prevents global <a> styles from applying
+diff --git a/client/templates/COMMIT_EDITMSG.COMMIT_EDITMSG b/client/templates/COMMIT_EDITMSG.COMMIT_EDITMSG
+new file mode 100644
+index 0000000..a040c27
+--- /dev/null
++++ b/client/templates/COMMIT_EDITMSG.COMMIT_EDITMSG
+@@ -0,0 +1,249 @@
++Added Roles and secured the routes so that a user must be logged in to 
++see the sites content.
++
++# --------------
++# Please enter the commit message for your changes. Everything below
++# this paragraph is ignored, and an empty message aborts the commit.
++# Just close the window to accept your message.
++diff --git a/.meteor/packages b/.meteor/packages
++index fb9f8bf..75a2894 100644
++--- a/.meteor/packages
+++++ b/.meteor/packages
++@@ -12,3 +12,4 @@ accounts-password
++ less
++ mizzao:bootstrap-3
++ accounts-ui
+++alanning:roles
++diff --git a/.meteor/versions b/.meteor/versions
++index 13747e9..112510e 100644
++--- a/.meteor/versions
+++++ b/.meteor/versions
++@@ -2,6 +2,7 @@ accounts-base@1.1.3
++ accounts-password@1.0.5
++ accounts-ui@1.1.4
++ accounts-ui-unstyled@1.1.5
+++alanning:roles@1.2.13
++ application-configuration@1.0.4
++ autoupdate@1.1.4
++ base64@1.0.2
++diff --git a/client/lib/router.js b/client/lib/router.js
++index db60856..c694041 100644
++--- a/client/lib/router.js
+++++ b/client/lib/router.js
++@@ -1,3 +1,6 @@
+++//Items = new Mongo.Collection('items')
+++ 
+++// iron router stuff
++ Router.configure({
++   // we use the  appBody template to define the layout for the entire app
++   layoutTemplate: 'layout',
++@@ -53,4 +56,71 @@ if (Meteor.isClient) {
++   Router.onBeforeAction('loading', {except: ['join', 'signin']});
++   Router.onBeforeAction('dataNotFound', {except: ['join', 'signin']});
++   
++-}
++\ No newline at end of file
+++}
+++
+++Router.onBeforeAction(function () {
+++  // all properties available in the route function
+++  // are also available here such as this.params
+++
+++  if (!Meteor.user()) {
+++    // if the user is not logged in, render the Login template
+++    this.render('Login');
+++  } else {
+++    // otherwise don't hold up the rest of hooks or our route/action function
+++    // from running
+++    this.next();
+++  }
+++});
+++var IR_Filters = {
+++    // All standard subscriptions you need before anything works
+++    // the .wait() makes sure that it continues only if the subscription
+++    // is ready and the data available
+++    // Use: global
+++    baseSubscriptions: function() {
+++        this.subscribe('userData').wait();
+++    },
+++    // show login if a guest wants to access private areas
+++    // Use: {only: [privateAreas] }
+++    isLoggedIn: function(pause) {
+++        if (!(Meteor.loggingIn() || Meteor.user())) {
+++          Notify.setError(__('Please login.')); // some custom packages
+++          this.render('login');
+++          pause();
+++        }
+++    },
+++    // make sure to scroll to the top of the page on a new route
+++    // Use: global
+++    scrollUp: function() {
+++        $('body,html').scrollTop(0);
+++    },
+++    // if this route depends on data, show the NProgess loading indicator
+++    // http://ricostacruz.com/nprogress/
+++    // Use: global
+++    startNProgress: function() {
+++        if (_.isFunction(this.data)) {
+++          NProgress.start();
+++        }
+++    },
+++    // tell google analytics that a page was viewed
+++    // e.g. https://github.com/datariot/meteor-ganalytics
+++    // Use: global
+++    pageview: function() {
+++        GAnalytics.pageview(this.path);
+++    },
+++    // only show route if you are an admin
+++    // using https://github.com/alanning/meteor-roles
+++    // Use: {only: [adminAreas]}
+++    isAdmin: function(pause) {
+++        if (!Roles.userIsInRole(Meteor.userId(), ['admin'])) {
+++          this.render('login');
+++          pause();
+++        }
+++    },
+++    // animate old content out using
+++    // http://daneden.github.io/animate.css/
+++    // Use: global
+++    animateContentOut: function() {
+++        $('#content').removeClass("animated fadeIn fadeInRight");
+++        $('footer').addClass("hide");
+++    }
+++}
++diff --git a/client/stylesheets/globals/button.import.less b/client/stylesheets/globals/button.import.less
++index 8b071a6..83ea337 100644
++--- a/client/stylesheets/globals/button.import.less
+++++ b/client/stylesheets/globals/button.import.less
++@@ -8,8 +8,9 @@
++   // Style
++   .title-caps;
++   .transition( all 200ms ease-in );
++-  color: @color-empty;
+++  color: @color-primary;
++   display: inline-block;
+++  // display: inline;
++   position: relative;
++   text-align: center;
++   text-decoration: none !important; //prevents global <a> styles from applying
++diff --git a/client/templates/Nav.html b/client/templates/Nav.html
++index e02c7c8..94ab1ee 100644
++--- a/client/templates/Nav.html
+++++ b/client/templates/Nav.html
++@@ -13,7 +13,7 @@
++       <ul class="nav navbar-nav">
++         {{> navItems}}        
++       </ul>
++-      <ul class="nav navbar-nav navbar-left"> {{> loginButtons}} </ul>
+++      <ul class="nav navbar-nav navbar-right"> {{> loginButtons}} </ul>
++     </div>
++   </div>
++ </nav>
++@@ -26,9 +26,14 @@
++ <template name="navItems">
++ 
++   <li class="{{ activeIfTemplateIs 'home' }}"><a href="/">Home</a></li>
++-  <li class="{{ activeIfTemplateIs 'goals' }}"><a href="{{pathFor 'goals'}}">Goals</a></li>
++-  <li class="{{ activeIfTemplateIs 'plans' }}"><a href="{{pathFor 'plans'}}">Plans</a></li>
++-  <li class="{{ activeIfTemplateIs 'actions' }}"><a href="{{pathFor 'actions'}}">Actions</a></li>
+++   {{#if currentUser}}
+++      <li class="{{ activeIfTemplateIs 'goals' }}"><a href="{{pathFor 'goals'}}">Goals</a></li>
+++      <li class="{{ activeIfTemplateIs 'plans' }}"><a href="{{pathFor 'plans'}}">Plans</a></li>
+++      <li class="{{ activeIfTemplateIs 'actions' }}"><a href="{{pathFor 'actions'}}">Actions</a></li>
+++      profile
+++  {{else}}
+++      <li>&nbsp;</li>      
+++  {{/if}}
++   <!-- li class="nav pull-right" >{{> loginButtons}}</li> 
++   <ul class="nav navbar-nav navbar-right">
++         {{> loginButtons}}
++diff --git a/client/templates/balancedzen.css b/client/templates/balancedzen.css
++index a02b7f8..17a654b 100644
++--- a/client/templates/balancedzen.css
+++++ b/client/templates/balancedzen.css
++@@ -5,7 +5,7 @@
++   margin: 25px;
++   background-color: #ccc;
++   border: 1px dashed #aaa;
++-  width: 65%;
+++  width: 50%;
++   cursor: move;
++ }
++ #goals {
++diff --git a/client/templates/goalList.html b/client/templates/goalList.html
++index ffd0ce8..eb44bf6 100644
++--- a/client/templates/goalList.html
+++++ b/client/templates/goalList.html
++@@ -9,23 +9,34 @@
++   <div id="goals">
++   {{#each   indexedArray  goals}}
++     
++-        
++-       <div class="mygroup" style= {{#if gttw _index}} background-color: #1D6566 {{else}} background-color: #008009 {{/if}} >
++-       <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
++-        
++-        <label class="checkbox">
++-          <input type="checkbox" checked="{{checked}}" name="checked">
++-          <span class="checkbox-custom"></span>
++-        </label>
++-        <span class="badge" >{{_index}} of {{goalsTotal}}</span>
++-        <span class="badge" >R:{{rankTwo rank}}</span> 
++-        <input class="item" type="text" value="{{title}}" placeholder="Goal name">
++-        <span class="icon-add js-addPlan"> </span>
++-        
++-        <a class="js-delete-item delete-item pull-right centering"  href="#"><span class="icon-trash text-center"></span></a>
++-        
++-        </div><br>
+++
+++      <div class="mygroup" style= {{#if gttw _index}} background-color: #1D6566 {{else}} background-color: #008009 {{/if}} >
+++        <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
+++          <label class="checkbox">
+++            <input type="checkbox" checked="{{checked}}" name="checked">
+++            <span class="checkbox-custom"></span>
+++          </label>
+++          <span class="badge" >{{_index}} of {{goalsTotal}}</span>
+++          <span class="badge" >R:{{rankTwo rank}}</span> 
+++          <input class="item" type="text" value="{{title}}" placeholder="Goal name">
+++          <span class="icon-add js-addPlan"> </span>
+++          
+++          <span class="btn-group btn-group-sm" role="group" aria-label="...">
+++            <button type="button" class="btn btn-xs">
+++              <span class="glyphicon glyphicon-cog"></span>
+++            </button>
+++            <button type="button" class="btn btn-xs">
+++              <span class="glyphicon glyphicon-trash"></span>
+++            </button>
+++            <button type="button" class="btn btn-xs">
+++              <span class="glyphicon glyphicon-calendar"></span>
+++            </button>
+++          </span> 
+++          <span class="glyphicon glyphicon-cog icon-cog"></span>
+++          <a class="js-delete-item delete-item"  href="#"><span class="glyphicon glyphicon-trash"></span></a>
+++          <a class="js-delete-item delete-item"  href="#"><span class="icon-trash"></span></a>
++         </div>
+++      </div>
++ 
++   {{/each}}
++   </div>
++diff --git a/client/templates/login.html b/client/templates/login.html
++new file mode 100644
++index 0000000..c5e196a
++--- /dev/null
+++++ b/client/templates/login.html
++@@ -0,0 +1,5 @@
+++<template name="login">
+++
+++	{{> loginButtons}}
+++	
+++</template>
++\ No newline at end of file
++diff --git a/server/app_server.js b/server/app_server.js
++index f52e08c..e69de29 100644
++--- a/server/app_server.js
+++++ b/server/app_server.js
++@@ -1,5 +0,0 @@
++-//Items = new Mongo.Collection('items')
++- 
++-// iron router stuff
++-
++-
+\ No newline at end of file
+diff --git a/client/templates/Nav.html b/client/templates/Nav.html
+index e02c7c8..94ab1ee 100644
+--- a/client/templates/Nav.html
++++ b/client/templates/Nav.html
+@@ -13,7 +13,7 @@
+       <ul class="nav navbar-nav">
+         {{> navItems}}        
+       </ul>
+-      <ul class="nav navbar-nav navbar-left"> {{> loginButtons}} </ul>
++      <ul class="nav navbar-nav navbar-right"> {{> loginButtons}} </ul>
+     </div>
+   </div>
+ </nav>
+@@ -26,9 +26,14 @@
+ <template name="navItems">
+ 
+   <li class="{{ activeIfTemplateIs 'home' }}"><a href="/">Home</a></li>
+-  <li class="{{ activeIfTemplateIs 'goals' }}"><a href="{{pathFor 'goals'}}">Goals</a></li>
+-  <li class="{{ activeIfTemplateIs 'plans' }}"><a href="{{pathFor 'plans'}}">Plans</a></li>
+-  <li class="{{ activeIfTemplateIs 'actions' }}"><a href="{{pathFor 'actions'}}">Actions</a></li>
++   {{#if currentUser}}
++      <li class="{{ activeIfTemplateIs 'goals' }}"><a href="{{pathFor 'goals'}}">Goals</a></li>
++      <li class="{{ activeIfTemplateIs 'plans' }}"><a href="{{pathFor 'plans'}}">Plans</a></li>
++      <li class="{{ activeIfTemplateIs 'actions' }}"><a href="{{pathFor 'actions'}}">Actions</a></li>
++      profile
++  {{else}}
++      <li>&nbsp;</li>      
++  {{/if}}
+   <!-- li class="nav pull-right" >{{> loginButtons}}</li> 
+   <ul class="nav navbar-nav navbar-right">
+         {{> loginButtons}}
+diff --git a/client/templates/balancedzen.css b/client/templates/balancedzen.css
+index a02b7f8..17a654b 100644
+--- a/client/templates/balancedzen.css
++++ b/client/templates/balancedzen.css
+@@ -5,7 +5,7 @@
+   margin: 25px;
+   background-color: #ccc;
+   border: 1px dashed #aaa;
+-  width: 65%;
++  width: 50%;
+   cursor: move;
+ }
+ #goals {
+diff --git a/client/templates/goalList.html b/client/templates/goalList.html
+index ffd0ce8..eb44bf6 100644
+--- a/client/templates/goalList.html
++++ b/client/templates/goalList.html
+@@ -9,23 +9,34 @@
+   <div id="goals">
+   {{#each   indexedArray  goals}}
+     
+-        
+-       <div class="mygroup" style= {{#if gttw _index}} background-color: #1D6566 {{else}} background-color: #008009 {{/if}} >
+-       <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
+-        
+-        <label class="checkbox">
+-          <input type="checkbox" checked="{{checked}}" name="checked">
+-          <span class="checkbox-custom"></span>
+-        </label>
+-        <span class="badge" >{{_index}} of {{goalsTotal}}</span>
+-        <span class="badge" >R:{{rankTwo rank}}</span> 
+-        <input class="item" type="text" value="{{title}}" placeholder="Goal name">
+-        <span class="icon-add js-addPlan"> </span>
+-        
+-        <a class="js-delete-item delete-item pull-right centering"  href="#"><span class="icon-trash text-center"></span></a>
+-        
+-        </div><br>
++
++      <div class="mygroup" style= {{#if gttw _index}} background-color: #1D6566 {{else}} background-color: #008009 {{/if}} >
++        <div class="item-list #goals draggable {{checkedClass}} {{editingClass}}">
++          <label class="checkbox">
++            <input type="checkbox" checked="{{checked}}" name="checked">
++            <span class="checkbox-custom"></span>
++          </label>
++          <span class="badge" >{{_index}} of {{goalsTotal}}</span>
++          <span class="badge" >R:{{rankTwo rank}}</span> 
++          <input class="item" type="text" value="{{title}}" placeholder="Goal name">
++          <span class="icon-add js-addPlan"> </span>
++          
++          <span class="btn-group btn-group-sm" role="group" aria-label="...">
++            <button type="button" class="btn btn-xs">
++              <span class="glyphicon glyphicon-cog"></span>
++            </button>
++            <button type="button" class="btn btn-xs">
++              <span class="glyphicon glyphicon-trash"></span>
++            </button>
++            <button type="button" class="btn btn-xs">
++              <span class="glyphicon glyphicon-calendar"></span>
++            </button>
++          </span> 
++          <span class="glyphicon glyphicon-cog icon-cog"></span>
++          <a class="js-delete-item delete-item"  href="#"><span class="glyphicon glyphicon-trash"></span></a>
++          <a class="js-delete-item delete-item"  href="#"><span class="icon-trash"></span></a>
+         </div>
++      </div>
+ 
+   {{/each}}
+   </div>
+diff --git a/client/templates/login.html b/client/templates/login.html
+new file mode 100644
+index 0000000..c5e196a
+--- /dev/null
++++ b/client/templates/login.html
+@@ -0,0 +1,5 @@
++<template name="login">
++
++	{{> loginButtons}}
++	
++</template>
+\ No newline at end of file
+diff --git a/server/app_server.js b/server/app_server.js
+index f52e08c..e69de29 100644
+--- a/server/app_server.js
++++ b/server/app_server.js
+@@ -1,5 +0,0 @@
+-//Items = new Mongo.Collection('items')
+- 
+-// iron router stuff
+-
+-
