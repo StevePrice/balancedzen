@@ -47,6 +47,12 @@ Router.map(function() {
   this.route('plans');
 
   this.route('actions');
+
+  this.route('manage');
+  this.route('signout', {
+    action: function() { App.signout(); }
+  } );
+
 });
 
 
